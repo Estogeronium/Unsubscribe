@@ -164,6 +164,8 @@
   .intro-rules p::before { content: "— "; }
   .intro .btn { margin-top: 4px; }
   .intro-note { font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.4; margin-top: 2px; }
+  .colophon { align-self: center; color: var(--muted); font-size: 11px; text-decoration: none; border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; margin-top: -6px; transition: color 0.15s ease, border-color 0.15s ease; }
+  .colophon:hover { color: var(--ink-2); border-color: var(--ink-2); }
 
   .end { align-items: stretch; text-align: center; gap: 22px; }
   .end-hero { display: flex; flex-direction: column; gap: 10px; padding: 12px 0 4px; }
@@ -1648,7 +1650,8 @@
         '<button class="btn btn-primary btn-block" id="spin" type="button">Крутить колесо</button>' +
         '<div class="prize" id="prize" hidden></div></div>' +
         '<button class="btn btn-primary btn-block" id="share" type="button">Поделиться результатом</button>' +
-        '<button class="link-quiet" id="again" type="button">Сыграть заново</button></div>'
+        '<button class="link-quiet" id="again" type="button">Сыграть заново</button>' +
+        '<a class="colophon" href="https://vonzvyagin.ru">Женя Звягин · vonzvyagin.ru</a></div>'
       );
       var SHARE_URL = "https://unsubscribe.vonzvyagin.ru";
       var shareText = "Отменил подписку на «Флюс» за " + time + " и " + clicks + " " + plural(clicks, "клик", "клика", "кликов") + ". Попробуй быстрее:";
@@ -1828,6 +1831,7 @@
         '<p>Согласитесь оставить подписку — начнёте сначала. Счётчик при этом не остановится.</p></div>' +
         '<button class="btn btn-primary btn-block" type="button" data-begin>Начать отмену</button>' +
         '<p class="intro-note">Пародия. «Инопоиск Флюс» — вымышленный сервис, совпадения с реальными компаниями случайны.</p>' +
+        '<a class="colophon" href="https://vonzvyagin.ru">Женя Звягин · vonzvyagin.ru</a>' +
         '</div>'
       );
       view.querySelector("[data-begin]").addEventListener("click", function () { self.begin(); });

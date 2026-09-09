@@ -51,6 +51,7 @@ export class Game implements GameApi {
         </div>
         <button class="btn btn-primary btn-block" type="button" data-begin>Начать отмену</button>
         <p class="intro-note">Пародия. «Инопоиск Флюс» — вымышленный сервис, совпадения с реальными компаниями случайны.</p>
+        <a class="colophon" href="https://vonzvyagin.ru">Женя Звягин · vonzvyagin.ru</a>
       </div>`);
     view.querySelector<HTMLElement>("[data-begin]")!.addEventListener("click", () => this.begin());
     this.stage.appendChild(view);

@@ -716,6 +716,20 @@ textarea.input {
   line-height: 1.4;
   margin-top: 2px;
 }
+.colophon {
+  align-self: center;
+  color: var(--muted);
+  font-size: 11px;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 1px;
+  margin-top: -6px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.colophon:hover {
+  color: var(--ink-2);
+  border-color: var(--ink-2);
+}
 
 /* ---------- Ending ---------- */
 .end {

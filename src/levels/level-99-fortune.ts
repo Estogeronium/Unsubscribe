@@ -106,6 +106,7 @@ export const ending: Level = {
 
         <button class="btn btn-primary btn-block" id="share" type="button">Поделиться результатом</button>
         <button class="link-quiet" id="again" type="button">Сыграть заново</button>
+        <a class="colophon" href="https://vonzvyagin.ru">Женя Звягин · vonzvyagin.ru</a>
       </div>`);
 
     const shareText = `Отменил подписку на «Флюс» за ${time} и ${clicks} ${plural(clicks, "клик", "клика", "кликов")}. Попробуй быстрее:`;
