@@ -1,5 +1,5 @@
 <title>Отписаться — Инопоиск Флюс</title>
-<meta name="description" content="Одна цель — отменить подписку «Флюс». Между вами и кнопкой — двадцать тёмных паттернов. Таймер идёт." />
+<meta name="description" content="Одна цель — отменить подписку «Флюс». Между вами и кнопкой — тёмные паттерны. Таймер идёт." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,20 +53,15 @@
 
   .hud { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
   .hud-hidden { display: none; }
-  .hud-in { max-width: 480px; margin: 0 auto; padding: 10px 16px; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; }
+  .hud-in { max-width: 480px; margin: 0 auto; padding: 10px 16px; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 14px; }
   .hud-sound { background: none; border: 0; padding: 0; cursor: pointer; font-size: 13px; line-height: 1; filter: grayscale(0.3); opacity: 0.8; transition: opacity 0.15s ease; }
   .hud-sound.is-off { filter: grayscale(1); opacity: 0.45; }
   .hud-sound:hover { opacity: 1; }
   .hud-brand { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
   .hud-glyph { width: 17px; height: 17px; border-radius: 5px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: "Spectral", serif; font-size: 11px; font-weight: 600; }
-  .hud-prog { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .hud-step { font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
   .hud-stats { font-size: 11px; color: var(--muted); display: inline-flex; gap: 5px; white-space: nowrap; }
   .hud-time.hud-pen { animation: penalty 0.5s ease; color: var(--danger); }
   @keyframes penalty { 0% { transform: translateY(-3px); opacity: 0.4; } 100% { transform: translateY(0); opacity: 1; } }
-
-  .bar { height: 5px; width: 100%; border-radius: 999px; background: var(--evil-bg); overflow: hidden; }
-  .bar > i { display: block; height: 100%; width: 8%; background: var(--accent); border-radius: 999px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 
   .stage { max-width: 480px; margin: 0 auto; padding: 22px 16px 96px; }
   .screen { display: flex; flex-direction: column; gap: 16px; animation: rise 0.28s ease both; }
@@ -521,18 +516,14 @@
     sfx.attachClick();
 
     // ---------- HUD ----------
-    var FAKE_WIDTH = [8, 34, 82, 51, 93, 44, 88, 70, 60, 95, 40, 86, 72, 97, 55, 90, 66, 99, 78, 100];
     function Hud(mount) {
       mount.innerHTML =
         '<div class="hud"><div class="hud-in">' +
         '<span class="hud-brand"><span class="hud-glyph">и</span>Инопоиск&nbsp;Флюс</span>' +
-        '<div class="hud-prog" role="progressbar" aria-label="Прогресс отмены"><div class="bar"><i></i></div><span class="hud-step mono"></span></div>' +
         '<span class="hud-stats mono"><span class="hud-time">0:00</span><span>·</span><span class="hud-clicks">0 кликов</span></span>' +
         '<button class="hud-sound" type="button" aria-label="Звук"></button>' +
         "</div></div>";
       this.el = mount.querySelector(".hud");
-      this.fill = mount.querySelector(".bar > i");
-      this.step = mount.querySelector(".hud-step");
       this.time = mount.querySelector(".hud-time");
       this.clicksEl = mount.querySelector(".hud-clicks");
       this.soundBtn = mount.querySelector(".hud-sound");
@@ -546,11 +537,6 @@
       this.soundBtn.classList.toggle("is-off", !on);
       this.soundBtn.setAttribute("aria-pressed", String(on));
     };
-    Hud.prototype.setStep = function (index, total) {
-      var w = FAKE_WIDTH[Math.min(index, FAKE_WIDTH.length - 1)];
-      this.fill.style.width = w + "%";
-      this.step.textContent = (index >= total - 6 && w >= 80) ? "почти готово" : "шаг " + (index + 1) + " из " + total;
-    };
     Hud.prototype.tick = function (ms) { this.time.textContent = mmss(ms); };
     Hud.prototype.setClicks = function (n) { this.clicksEl.textContent = n + " " + plural(n, "клик", "клика", "кликов"); };
     Hud.prototype.flashPenalty = function () { this.time.classList.remove("hud-pen"); void this.time.offsetWidth; this.time.classList.add("hud-pen"); };
@@ -558,6 +544,14 @@
 
     // ---------- levels ----------
     var settingsRow = function (t) { return '<button class="row" type="button" data-row><span>' + t + '</span><span class="chev">›</span></button>'; };
+
+    // «Активна до» — последний день текущего месяца, чтобы дата не устаревала.
+    var MONTHS_GEN = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+    var activeUntil = function () {
+      var last = new Date();
+      last.setMonth(last.getMonth() + 1, 0);
+      return last.getDate() + " " + MONTHS_GEN[last.getMonth()];
+    };
 
     var level01 = { id: "settings", mount: function (root, game) {
       var view = el(
@@ -600,7 +594,7 @@
     var level03 = { id: "sure", mount: function (root, game) {
       var view = el(
         '<div class="screen"><h1 class="screen-title">Подписка «Флюс»</h1>' +
-        '<p class="muted-line">Активна до 30 сентября · 399 ₽ / мес · автопродление включено</p>' +
+        '<p class="muted-line">Активна до ' + activeUntil() + ' · 399 ₽ / мес · автопродление включено</p>' +
         '<div class="sheet-wrap"><div class="sheet"><div class="handle"></div><h3>Уже уходите?</h3>' +
         "<p>С «Флюсом» вы теряете 4K без рекламы, музыку, кэшбэк и 12 ГБ в облаке. История просмотров и оценки сохранятся.</p>" +
         '<button class="btn btn-primary btn-block" type="button" data-stay>Остаться на «Флюсе»</button>' +
@@ -1656,7 +1650,7 @@
         '<button class="btn btn-primary btn-block" id="share" type="button">Поделиться результатом</button>' +
         '<button class="link-quiet" id="again" type="button">Сыграть заново</button></div>'
       );
-      var SHARE_URL = "https://vonzvyagin.ru/unsubscribe";
+      var SHARE_URL = "https://unsubscribe.vonzvyagin.ru";
       var shareText = "Отменил подписку на «Флюс» за " + time + " и " + clicks + " " + plural(clicks, "клик", "клика", "кликов") + ". Попробуй быстрее:";
       view.querySelector("#share").addEventListener("click", function () {
         if (navigator.share) {
@@ -1670,7 +1664,7 @@
           );
           return;
         }
-        toast("Поделитесь ссылкой вручную: vonzvyagin.ru/unsubscribe");
+        toast("Поделитесь ссылкой вручную: unsubscribe.vonzvyagin.ru");
       });
       var wheel = view.querySelector("#wheel"), spin = view.querySelector("#spin"), prize = view.querySelector("#prize"), gift = view.querySelector(".gift");
       var spun = false;
@@ -1854,7 +1848,6 @@
       var level = levels[this.index];
       var isEnding = this.index === levels.length - 1;
       this.hud.setVisible(!isEnding);
-      if (!isEnding) this.hud.setStep(this.index, levels.length - 1);
       var c = level.mount(this.stage, this);
       this.cleanup = typeof c === "function" ? c : null;
       window.scrollTo({ top: 0 });

@@ -7,9 +7,6 @@ import * as sfx from "./sound";
 
 const DEFAULT_FAIL = "Спасибо, что согласились не отменять подписку. Повезёт в другой раз.";
 
-// The last entry is the ending screen; it doesn't count toward the step total.
-const REAL_LEVELS = levels.length - 1;
-
 export class Game implements GameApi {
   private index = 0;
   private clickCount = 0;
@@ -154,7 +151,6 @@ export class Game implements GameApi {
     const level = levels[this.index]!;
     const isEnding = this.index === levels.length - 1;
     this.hud.setVisible(!isEnding);
-    if (!isEnding) this.hud.setStep(this.index, REAL_LEVELS);
 
     const maybeCleanup = level.mount(this.stage, this);
     if (typeof maybeCleanup === "function") this.cleanup = maybeCleanup;

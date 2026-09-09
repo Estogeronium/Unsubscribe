@@ -13,19 +13,16 @@
 
 ## Стек
 
-Vite + TypeScript, без фреймворка. Деплой — GitHub Pages.
+Vite + TypeScript, без фреймворка. Деплой — GitHub Pages
+(`github.com/Estogeronium/Unsubscribe`). Целевой адрес — `unsubscribe.vonzvyagin.ru`
+(поддомен, `public/CNAME`), пока также доступно на `estogeronium.github.io/Unsubscribe/`.
 
-Публичная страница проекта — `vonzvyagin.ru/unsubscribe` (домен + Figma Sites).
-На финале кнопка «Поделиться результатом» шлёт туда текст+ссылку через Web Share API.
+На финале кнопка «Поделиться результатом» шлёт `text` + `url` (адрес игры) через Web Share API.
 
-**Превью ссылки (og:image).** Мета-теги Open Graph / Twitter — в `index.html`.
-Картинка `public/og.png` (1200×630), исходник `design/og-card.svg`.
-`og:image` и `og:url` — **абсолютные**, сейчас стоят `https://vonzvyagin.ru/unsubscribe/…` —
-поправить под фактический путь деплоя. Фавикон — `public/favicon.svg`.
-Перегенерация картинки: открыть `design/og-card.svg` (контент в центральной полосе
-1200×630 внутри квадрата 1200×1200) и экспортировать/обрезать до 1200×630. Открытый вопрос —
-отдать этот путь под лендинг в Figma и встроить игру iframe-ом, либо повесить игру
-на домен через GitHub Pages + custom domain.
+**Превью ссылки (og:image).** Мета-теги Open Graph / Twitter — в `index.html`, абсолютные,
+указывают на `https://unsubscribe.vonzvyagin.ru/`. Картинка `public/og.png` (1200×630),
+исходник `design/og-card.svg` (контент в центральной полосе 1200×630 внутри квадрата
+1200×1200 — так его крутит `qlmanage`). Фавикон — `public/favicon.svg`.
 
 ## Разработка
 
@@ -47,33 +44,24 @@ npm run preview  # предпросмотр сборки
 ## Деплой
 
 CI — `.github/workflows/deploy.yml`: push в `main` → GitHub Actions → `npm run build`
-(`tsc --noEmit && vite build`) → публикация `dist/` на GitHub Pages. Локально Node не нужен,
-всё собирает Action.
+(`tsc --noEmit && vite build`) → публикация `dist/` на GitHub Pages. Локально Node не нужен.
+`configure-pages` с `enablement: true` — Pages включается сам, руками в Settings не надо.
 
-Первый раз:
+Обновление: коммит через **GitHub Desktop** (Summary → Commit to main → Push origin),
+Action пересобирает автоматически, ~1–2 мин.
 
-```bash
-# репо уже инициализирован (ветка main, всё застейджено)
-git config user.name  "Имя"
-git config user.email "you@example.com"
-git commit -m "Инопоиск Флюс — Отписаться: v1"
+**Свой домен `unsubscribe.vonzvyagin.ru`.** GitHub Pages отдаёт сайт с корня
+домена/поддомена (произвольный путь не поддерживается), поэтому взят поддомен.
 
-git remote add origin https://github.com/<логин>/<репо>.git
-git push -u origin main
-```
-
-Затем в репозитории: **Settings → Pages → Source: GitHub Actions**. Push запустит workflow;
-через 1–2 мин игра будет на `https://<логин>.github.io/<репо>/`.
-
-**Свой домен.** GitHub Pages отдаёт сайт с корня домена/поддомена, произвольный путь
-(`vonzvyagin.ru/unsubscribe`) напрямую не поддерживается. Проще всего — поддомен
-`unsubscribe.vonzvyagin.ru`:
-
-1. DNS: `CNAME`-запись `unsubscribe` → `<логин>.github.io`
-2. Положить `public/CNAME` c одной строкой: `unsubscribe.vonzvyagin.ru`
-3. Заменить домен в `og:*` / `canonical` (`index.html`) и в `SITE_URL` игры
-   (`src/levels/level-99-fortune.ts` + `preview/index.html`) на `https://unsubscribe.vonzvyagin.ru`
-4. После деплоя прогреть превью в Телеграме: отправить ссылку боту `@WebpageBot`
+1. У DNS-провайдера домена `vonzvyagin.ru` добавить запись:
+   `CNAME`  `unsubscribe`  →  `estogeronium.github.io`
+2. `public/CNAME` (уже в репозитории) содержит `unsubscribe.vonzvyagin.ru` — GitHub
+   подхватит домен из него при деплое.
+3. GitHub → репозиторий → Settings → Pages → Custom domain: `unsubscribe.vonzvyagin.ru`
+   → дождаться «DNS check successful» → включить **Enforce HTTPS** (сертификат ~до часа).
+4. og-теги и кнопка «Поделиться» уже указывают на этот адрес (`index.html`,
+   `src/levels/level-99-fortune.ts`, `preview/index.html`).
+5. Прогреть превью в Телеграме: отправить ссылку боту `@WebpageBot`.
 
 Если первый Action упал красным — это почти всегда ошибка `tsc`; лог во вкладке Actions.
 

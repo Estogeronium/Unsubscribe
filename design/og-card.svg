@@ -17,12 +17,9 @@
 
     <text x="86" y="322" class="serif" font-size="132" font-weight="600" fill="#1a1a23" letter-spacing="-3">Отписаться</text>
 
-    <text x="92" y="404" class="sans" font-size="32" fill="#54545f">Одна цель — отменить подписку.</text>
-    <text x="92" y="450" class="sans" font-size="32" fill="#54545f">Между вами и кнопкой — двадцать тёмных паттернов.</text>
+    <text x="92" y="404" class="sans" font-size="32" fill="#54545f">Одна цель — отменить подписку «Флюс».</text>
+    <text x="92" y="450" class="sans" font-size="32" fill="#54545f">Между вами и кнопкой — тёмные паттерны. Таймер идёт.</text>
 
-    <rect x="92" y="524" width="1016" height="10" rx="5" fill="#e3e3ea"/>
-    <rect x="92" y="524" width="446" height="10" rx="5" fill="#5b5bd6"/>
-    <text x="92" y="566" class="mono" font-size="19" fill="#8b8b98">почти готово</text>
-    <text x="1108" y="566" class="mono" font-size="20" font-weight="500" fill="#5b5bd6" text-anchor="end">vonzvyagin.ru/unsubscribe</text>
+    <text x="92" y="566" class="mono" font-size="20" font-weight="500" fill="#5b5bd6">unsubscribe.vonzvyagin.ru</text>
   </g>
 </svg>

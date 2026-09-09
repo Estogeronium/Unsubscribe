@@ -1,6 +1,28 @@
 import type { Level } from "../engine/types";
 import { el } from "../engine/dom";
 
+const MONTHS_GEN = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+];
+
+// «Активна до» — последний день текущего месяца, чтобы дата не устаревала.
+const activeUntil = (): string => {
+  const last = new Date();
+  last.setMonth(last.getMonth() + 1, 0);
+  return `${last.getDate()} ${MONTHS_GEN[last.getMonth()]}`;
+};
+
 export const level03: Level = {
   id: "sure",
   name: "Вы уверены?",
@@ -8,7 +30,7 @@ export const level03: Level = {
     const view = el(`
       <div class="screen">
         <h1 class="screen-title">Подписка «Флюс»</h1>
-        <p class="muted-line">Активна до 30 сентября · 399 ₽ / мес · автопродление включено</p>
+        <p class="muted-line">Активна до ${activeUntil()} · 399 ₽ / мес · автопродление включено</p>
         <div class="sheet-wrap">
           <div class="sheet">
             <div class="handle"></div>

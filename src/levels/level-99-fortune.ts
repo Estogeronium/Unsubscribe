@@ -2,7 +2,7 @@ import type { Level } from "../engine/types";
 import { confetti, el, mmss, plural, toast } from "../engine/dom";
 import { blip, wheelSpin, win } from "../engine/sound";
 
-const SITE_URL = "https://vonzvyagin.ru/unsubscribe";
+const SITE_URL = "https://unsubscribe.vonzvyagin.ru";
 
 interface Segment {
   label: string;
@@ -124,7 +124,7 @@ export const ending: Level = {
         );
         return;
       }
-      toast("Поделитесь ссылкой вручную: vonzvyagin.ru/unsubscribe");
+      toast("Поделитесь ссылкой вручную: unsubscribe.vonzvyagin.ru");
     });
 
     const wheel = view.querySelector<HTMLElement>("#wheel")!;
