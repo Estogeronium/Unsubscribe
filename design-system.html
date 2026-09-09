@@ -1,0 +1,957 @@
+<title>Дизайн-система «Инопоиск Флюс»</title>
+<meta name="description" content="Визуальный язык и интерфейс игры про отмену подписки: спокойный премиум-вид как приманка для двадцати тёмных паттернов.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  /* ---------- Tokens ---------- */
+  :root{
+    color-scheme: light;
+    --bg:#F4F4F7;
+    --surface:#FFFFFF;
+    --surface-2:#FAFAFBFF;
+    --ink:#1A1A23;
+    --ink-2:#54545F;
+    --muted:#8B8B98;
+    --line:rgba(20,20,45,.10);
+    --line-strong:rgba(20,20,45,.17);
+    --accent:#5B5BD6;
+    --accent-ink:#FFFFFF;
+    --accent-wash:rgba(91,91,214,.10);
+    --danger:#D23A40;
+    --ok:#2F9461;
+    --evil:#B6B6C0;
+    --evil-bg:#ECECEF;
+    --shadow-sm:0 1px 2px rgba(20,20,45,.05);
+    --shadow-lg:0 1px 3px rgba(20,20,45,.06), 0 18px 48px rgba(20,20,45,.13);
+    --r-card:18px;
+    --r-ctl:12px;
+    --maxw:980px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg:#0B0B0E;
+      --surface:#151519;
+      --surface-2:#101014;
+      --ink:#F1F1F4;
+      --ink-2:#AFAFBB;
+      --muted:#7A7A88;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(255,255,255,.19);
+      --accent:#7C7CF1;
+      --accent-ink:#0B0B0E;
+      --accent-wash:rgba(124,124,241,.16);
+      --danger:#EF6469;
+      --ok:#54C08A;
+      --evil:#54545E;
+      --evil-bg:#1A1A20;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+      --shadow-lg:0 1px 3px rgba(0,0,0,.4), 0 20px 54px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg:#0B0B0E;
+    --surface:#151519;
+    --surface-2:#101014;
+    --ink:#F1F1F4;
+    --ink-2:#AFAFBB;
+    --muted:#7A7A88;
+    --line:rgba(255,255,255,.10);
+    --line-strong:rgba(255,255,255,.19);
+    --accent:#7C7CF1;
+    --accent-ink:#0B0B0E;
+    --accent-wash:rgba(124,124,241,.16);
+    --danger:#EF6469;
+    --ok:#54C08A;
+    --evil:#54545E;
+    --evil-bg:#1A1A20;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+    --shadow-lg:0 1px 3px rgba(0,0,0,.4), 0 20px 54px rgba(0,0,0,.55);
+  }
+
+  /* ---------- Base ---------- */
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink-2);
+    font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size:15px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{color:var(--ink);text-wrap:balance;margin:0}
+  h1{font-family:"Spectral", Georgia, serif;font-weight:600;font-size:clamp(2rem,1.3rem + 3vw,3rem);line-height:1.1;letter-spacing:-.01em}
+  h2{font-family:"Spectral", Georgia, serif;font-weight:600;font-size:clamp(1.5rem,1.2rem + 1.4vw,1.9rem);line-height:1.2;letter-spacing:-.01em}
+  h3{font-family:"Inter", sans-serif;font-weight:600;font-size:1rem;color:var(--ink)}
+  p{margin:0}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  strong{color:var(--ink);font-weight:600}
+  code,.mono{font-family:"JetBrains Mono", ui-monospace, Menlo, monospace}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  hr{border:0;border-top:1px solid var(--line);margin:0}
+
+  .eyebrow{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px;font-weight:500;
+    text-transform:uppercase;letter-spacing:.14em;
+    color:var(--muted);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-in{
+    max-width:var(--maxw);margin:0 auto;
+    padding:12px 22px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .wordmark{display:flex;align-items:baseline;gap:9px;margin-right:auto}
+  .wordmark b{
+    color:var(--ink);font-weight:600;letter-spacing:-.01em;font-size:15px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .glyph{
+    width:19px;height:19px;border-radius:6px;
+    background:var(--accent);
+    display:inline-grid;place-items:center;
+    color:var(--accent-ink);font-weight:600;font-size:12px;
+    font-family:"Spectral",serif;
+  }
+  .wordmark span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{
+    color:var(--ink-2);font-size:13px;white-space:nowrap;
+    padding:6px 10px;border-radius:8px;
+  }
+  .nav a:hover{background:var(--accent-wash);color:var(--ink);text-decoration:none}
+  .toggle{
+    flex:none;
+    display:inline-flex;align-items:center;gap:7px;
+    padding:7px 12px;border-radius:999px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);color:var(--ink);
+    font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;
+  }
+  .toggle:hover{border-color:var(--accent)}
+
+  /* ---------- Layout ---------- */
+  main{max-width:var(--maxw);margin:0 auto;padding:0 22px 120px}
+  section{padding-top:76px}
+  .lede{max-width:64ch}
+  .section-head{
+    display:flex;flex-direction:column;gap:10px;
+    padding-bottom:26px;margin-bottom:34px;
+    border-bottom:1px solid var(--line);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{padding-top:64px}
+  .hero h1{max-width:18ch;margin-bottom:22px}
+  .hero .lede{font-size:clamp(1rem,.95rem + .4vw,1.18rem);color:var(--ink-2)}
+  .hero .lede + .lede{margin-top:14px}
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;
+  }
+  .tag{
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;
+    padding:6px 11px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--line);
+    color:var(--ink-2);
+  }
+  .tag b{color:var(--ink)}
+
+  /* ---------- Principles ---------- */
+  .principles{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden}
+  @media(min-width:720px){.principles{grid-template-columns:1fr 1fr}}
+  .principle{background:var(--surface);padding:22px 22px 24px}
+  .principle .eyebrow{color:var(--accent)}
+  .principle h3{margin:12px 0 6px}
+  .principle p{font-size:13.5px}
+
+  /* ---------- Cards / panels ---------- */
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--r-card);
+    padding:24px;
+  }
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .grid{display:grid;gap:16px}
+  .cluster{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+  /* ---------- Color ---------- */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .swatch{display:flex;flex-direction:column;gap:9px}
+  .chip{height:66px;border-radius:12px;border:1px solid var(--line)}
+  .sw-meta{display:flex;flex-direction:column;gap:1px}
+  .sw-meta b{color:var(--ink);font-size:13px;font-weight:500}
+  .sw-meta span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+  .callout{
+    margin-top:18px;padding:14px 16px;
+    border-left:2px solid var(--accent);
+    background:var(--accent-wash);
+    border-radius:0 10px 10px 0;
+    font-size:13.5px;color:var(--ink-2);
+  }
+  .callout b{color:var(--ink)}
+
+  /* ---------- Type specimen ---------- */
+  .type-row{
+    display:grid;gap:6px 20px;grid-template-columns:110px 1fr;
+    padding:16px 0;border-top:1px solid var(--line);align-items:baseline;
+  }
+  .type-row:first-child{border-top:0}
+  .type-row .spec{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);line-height:1.5}
+  .t-display{font-family:"Spectral",serif;font-weight:600;font-size:32px;color:var(--ink);line-height:1.15}
+  .t-h2{font-family:"Spectral",serif;font-weight:600;font-size:22px;color:var(--ink)}
+  .t-h3{font-weight:600;font-size:16px;color:var(--ink)}
+  .t-body{font-size:15px;color:var(--ink-2)}
+  .t-small{font-size:13px;color:var(--ink-2)}
+  .t-mono{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+  .faces{display:grid;gap:14px;margin-top:24px}
+  @media(min-width:720px){.faces{grid-template-columns:repeat(3,1fr)}}
+  .face{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .face .big{font-size:34px;color:var(--ink);line-height:1;margin-bottom:10px}
+  .face h3{font-size:13px;margin-bottom:3px}
+  .face p{font-size:12.5px}
+
+  /* ---------- Component gallery ---------- */
+  .gallery{display:grid;gap:16px}
+  @media(min-width:760px){.gallery{grid-template-columns:1fr 1fr}}
+  .demo{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);
+    padding:20px;display:flex;flex-direction:column;gap:14px;
+  }
+  .demo > .eyebrow{color:var(--muted)}
+  .demo-body{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .demo-body.col{flex-direction:column;align-items:stretch}
+
+  /* buttons */
+  .btn{
+    font-family:inherit;font-size:14px;font-weight:500;
+    padding:10px 18px;border-radius:var(--r-ctl);
+    border:1px solid transparent;cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--accent);color:var(--accent-ink)}
+  .btn-primary:hover{background:color-mix(in srgb,var(--accent) 88%,black)}
+  .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-danger{background:transparent;border-color:color-mix(in srgb,var(--danger) 40%,transparent);color:var(--danger)}
+  .btn-danger:hover{background:color-mix(in srgb,var(--danger) 12%,transparent)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-link{background:none;border:0;color:var(--accent);padding:10px 4px;text-decoration:underline;cursor:pointer;font-size:14px}
+  .link-evil{
+    background:none;border:0;cursor:pointer;
+    color:var(--evil);font-size:12px;font-family:inherit;
+    text-decoration:underline;padding:4px;
+  }
+
+  /* form */
+  .field{display:flex;flex-direction:column;gap:6px;width:100%}
+  .field label{font-size:12.5px;color:var(--ink-2);font-weight:500}
+  .input, textarea.input{
+    font-family:inherit;font-size:14px;color:var(--ink);
+    background:var(--surface-2);
+    border:1px solid var(--line-strong);border-radius:10px;
+    padding:10px 12px;width:100%;
+  }
+  .input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+  textarea.input{resize:vertical;min-height:64px}
+  .counter{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);align-self:flex-end}
+  .opt{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13.5px;color:var(--ink);cursor:pointer}
+  .opt:hover{border-color:var(--line-strong)}
+  .opt input{accent-color:var(--accent);width:16px;height:16px}
+  .opt.sel{border-color:var(--accent);background:var(--accent-wash)}
+
+  /* toast */
+  .toast{
+    display:flex;align-items:flex-start;gap:10px;
+    background:var(--surface);border:1px solid var(--line);
+    box-shadow:var(--shadow-lg);border-radius:12px;padding:12px 14px;max-width:320px;
+  }
+  .toast .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);margin-top:6px;flex:none}
+  .toast b{color:var(--ink);font-size:13.5px}
+  .toast p{font-size:12.5px}
+
+  /* chat */
+  .chat{display:flex;flex-direction:column;gap:8px;width:100%}
+  .bubble{max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.5}
+  .bubble.bot{align-self:flex-start;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px}
+  .bubble.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:5px}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:11px 13px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bob 1.2s infinite ease-in-out}
+  .typing i:nth-child(2){animation-delay:.15s}
+  .typing i:nth-child(3){animation-delay:.3s}
+  @keyframes bob{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  /* progress + stepper */
+  .bar{height:6px;border-radius:999px;background:var(--evil-bg);overflow:hidden;width:100%}
+  .bar > i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .bar-meta{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);margin-top:7px}
+
+  /* slider */
+  input[type="range"]{width:100%;accent-color:var(--accent)}
+
+  /* ---------- Bait & trap ---------- */
+  .pairs{display:grid;gap:16px}
+  .pair{
+    display:grid;gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;
+  }
+  @media(min-width:720px){.pair{grid-template-columns:1fr 1fr}}
+  .half{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:14px;min-height:150px}
+  .half .tab{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;
+    text-transform:uppercase;letter-spacing:.1em;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .half.honest .tab{color:var(--ok)}
+  .half.trap .tab{color:var(--danger)}
+  .half .demo-area{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;align-items:flex-start}
+  .modalbox{
+    width:100%;border:1px solid var(--line);border-radius:12px;padding:14px;
+    background:var(--surface-2);position:relative;font-size:12.5px;color:var(--ink-2)
+  }
+  .x-honest{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer;font-size:13px;line-height:1}
+  .x-trap{position:absolute;bottom:6px;left:8px;border:0;background:none;color:var(--evil);cursor:pointer;font-size:10px}
+  .note{
+    border-left:2px solid var(--danger);
+    padding:2px 0 2px 11px;
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.55;color:var(--ink-2);
+  }
+  .note b{color:var(--danger);font-weight:500}
+  .pat{font-family:"JetBrains Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .runaway{position:relative;transition:transform .18s ease}
+
+  /* ---------- Device mockups ---------- */
+  .screens{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-top:8px}
+  .screen-wrap{display:flex;flex-direction:column;gap:14px;width:340px;max-width:100%}
+  .plinth{
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--accent-wash), transparent 70%),
+      var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:26px;
+    padding:26px 18px 30px;
+    display:flex;justify-content:center;
+  }
+  .device{
+    width:290px;max-width:100%;
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:34px;
+    box-shadow:var(--shadow-lg);
+    overflow:hidden;
+  }
+  .statusbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:11px 22px 6px;font-size:11px;color:var(--ink);font-weight:600;
+  }
+  .statusbar .sig{display:flex;gap:3px;align-items:flex-end}
+  .statusbar .sig i{width:3px;background:var(--ink);border-radius:1px}
+  .statusbar .sig i:nth-child(1){height:5px}.statusbar .sig i:nth-child(2){height:7px}
+  .statusbar .sig i:nth-child(3){height:9px}.statusbar .sig i:nth-child(4){height:11px}
+  .app{padding:14px 18px 22px;min-height:430px;display:flex;flex-direction:column}
+  .app-title{font-size:19px;font-weight:600;color:var(--ink);font-family:"Spectral",serif;margin:6px 0 14px}
+  .list{display:flex;flex-direction:column;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;font-size:13px;color:var(--ink);border-top:1px solid var(--line)}
+  .row:first-child{border-top:0}
+  .row .ic{width:22px;height:22px;border-radius:6px;background:var(--accent-wash);flex:none}
+  .row .chev{color:var(--muted);font-size:13px}
+  .grp-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:"JetBrains Mono",monospace;margin:16px 0 7px}
+  .sub-link{margin-top:auto;padding-top:22px}
+  .sub-link a{color:var(--evil);font-size:11px;text-decoration:underline}
+
+  .sheet-scrim{background:var(--evil-bg);border-radius:22px 22px 0 0;padding-top:30px;margin-top:8px;flex:1;display:flex;align-items:flex-end}
+  .sheet{
+    background:var(--surface);border:1px solid var(--line);border-bottom:0;
+    border-radius:20px 20px 0 0;padding:16px 18px 20px;width:100%;
+    box-shadow:0 -12px 40px rgba(20,20,45,.12);
+  }
+  .handle{width:34px;height:4px;border-radius:2px;background:var(--line-strong);margin:0 auto 14px}
+  .sheet h4{margin:0 0 6px;font-size:16px;color:var(--ink);font-weight:600}
+  .sheet p{font-size:12.5px;color:var(--ink-2);margin-bottom:16px}
+  .sheet .btn{width:100%;text-align:center}
+  .sheet .link-evil{display:block;width:100%;text-align:center;margin-top:12px}
+
+  .qhead{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .qhead .bar{height:5px}
+  .q-title{font-size:15px;font-weight:600;color:var(--ink);margin:4px 0 12px}
+
+  .cap{font-size:12px;color:var(--muted);text-align:center}
+  .cap b{color:var(--ink-2);font-weight:500}
+
+  /* ---------- Interactive: lying bar ---------- */
+  .liar{display:flex;flex-direction:column;gap:14px}
+  .liar .bar{height:8px}
+  .liar-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .real{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+  .lie{font-family:"Spectral",serif;font-style:italic;font-size:15px;color:var(--ink)}
+
+  /* ---------- Level map ---------- */
+  .levels{
+    display:grid;gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;
+  }
+  @media(min-width:680px){.levels{grid-template-columns:1fr 1fr}}
+  .lvl{background:var(--surface);padding:12px 16px;display:flex;gap:12px;font-size:13px}
+  .lvl .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);flex:none;width:20px;padding-top:2px}
+  .lvl b{color:var(--ink);font-weight:500}
+  .lvl span{display:block;color:var(--muted);font-size:11.5px;font-family:"JetBrains Mono",monospace;margin-top:1px}
+
+  /* ---------- Footer ---------- */
+  footer{max-width:var(--maxw);margin:0 auto;padding:40px 22px 80px}
+  .disclaim{
+    border:1px dashed var(--line-strong);border-radius:14px;
+    padding:16px 18px;font-size:12.5px;color:var(--muted);
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .disclaim b{color:var(--ink-2)}
+  .foot-meta{margin-top:20px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="wordmark">
+      <b><span class="glyph">и</span>Инопоиск&nbsp;Флюс</b>
+      <span>design&nbsp;system</span>
+    </span>
+    <nav class="nav">
+      <a href="#thesis">Идея</a>
+      <a href="#color">Цвет</a>
+      <a href="#type">Шрифт</a>
+      <a href="#components">Компоненты</a>
+      <a href="#bait">Приманки</a>
+      <a href="#screens">Экраны</a>
+      <a href="#map">Уровни</a>
+    </nav>
+    <button class="toggle" id="themeBtn" type="button" aria-label="Переключить тему">
+      <span id="themeGlyph">◐</span><span id="themeLabel">Тема</span>
+    </button>
+  </div>
+</div>
+
+<main>
+
+  <header class="hero" id="thesis">
+    <p class="eyebrow">Дизайн-система · v0.1 · игра-однодневка в духе neal.fun</p>
+    <h1>Интерфейс, которому хочется доверять — ровно до кнопки «Отменить».</h1>
+    <p class="lede">«Инопоиск Флюс» выглядит как дорогой современный сервис: спокойные нейтральные тона, аккуратная типографика, мягкие тени, ничего лишнего. Эта премиальность — <strong>приманка</strong>. Единственный путь к отмене подписки всегда чуть-чуть испорчен: серым по серому, на пару пикселей меньше, со сломанным ховером, сдвинут с сетки.</p>
+    <p class="lede">Задача игрока — пройти 20 уровней тёмных паттернов и всё-таки отписаться. Ни очков, ни лидерборда, ни соревнования: в финале — разбор всех манипуляций, через которые вы только что прошли.</p>
+    <div class="meta-row">
+      <span class="tag"><b>20</b> уровней</span>
+      <span class="tag"><b>0</b> очков и рейтингов</span>
+      <span class="tag">Vite + TypeScript, без фреймворка</span>
+      <span class="tag">GitHub Pages</span>
+      <span class="tag">Светлая / тёмная тема</span>
+    </div>
+  </header>
+
+  <section id="principles">
+    <div class="section-head">
+      <span class="eyebrow">Принципы</span>
+      <h2>Четыре правила, на которых держится вся игра</h2>
+    </div>
+    <div class="principles">
+      <div class="principle">
+        <span class="eyebrow">01 — Приманка</span>
+        <h3>Красота вызывает доверие</h3>
+        <p>Всё оформление — честно премиальное. Игрок должен верить, что «здесь по-человечески», и тем сильнее ощущать подвох.</p>
+      </div>
+      <div class="principle">
+        <span class="eyebrow">02 — Ловушка</span>
+        <h3>Портится только путь к выходу</h3>
+        <p>Деградация точечная: цвет, размер, положение, тайминг, фокус. Никогда — «просто уродливо». Всегда — «почти незаметно».</p>
+      </div>
+      <div class="principle">
+        <span class="eyebrow">03 — Абсурд по нарастающей</span>
+        <h3>От «вы уверены?» до пятнашек</h3>
+        <p>Первые уровни узнаваемо-бытовые. К середине — головоломки, лабиринты, звонок в «отдел удержания», распознавание почерка.</p>
+      </div>
+      <div class="principle">
+        <span class="eyebrow">04 — Развязка</span>
+        <h3>Игра объясняет саму себя</h3>
+        <p>Финал — спокойный экран с именами всех паттернов и одной строкой про каждый. Смысл игры — насмотренность, а не рекорд.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="color">
+    <div class="section-head">
+      <span class="eyebrow">Палитра</span>
+      <h2>Холодные нейтрали с индиго-подтоном и один спокойный акцент</h2>
+      <p class="lede">Серые уведены в сторону акцента, чтобы читаться как выбранные, а не взятые по умолчанию. Значения — <span class="mono">светлая · тёмная</span>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:var(--bg)"></div><div class="sw-meta"><b>Фон</b><span>#F4F4F7 · #0B0B0E</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--surface)"></div><div class="sw-meta"><b>Поверхность</b><span>#FFFFFF · #151519</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--ink)"></div><div class="sw-meta"><b>Текст</b><span>#1A1A23 · #F1F1F4</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--ink-2)"></div><div class="sw-meta"><b>Текст 2</b><span>#54545F · #AFAFBB</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--accent)"></div><div class="sw-meta"><b>Акцент</b><span>#5B5BD6 · #7C7CF1</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--ok)"></div><div class="sw-meta"><b>Успех</b><span>#2F9461 · #54C08A</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--danger)"></div><div class="sw-meta"><b>Опасное действие</b><span>#D23A40 · #EF6469</span></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--evil)"></div><div class="sw-meta"><b>«Злой» серый</b><span>#B6B6C0 · #54545E</span></div></div>
+      </div>
+      <div class="callout">
+        <b>Осознанно не «яндексовые» цвета.</b> Никакого фирменного жёлтого <span class="mono">#FFCC00</span> и красного. Акцент — сдержанный индиго <span class="mono">#5B5BD6</span>: он читается как «доверенный продукт», но не отсылает к реальному бренду. Логотип и фирменная гарнитура не используются.
+      </div>
+    </div>
+  </section>
+
+  <section id="type">
+    <div class="section-head">
+      <span class="eyebrow">Типографика</span>
+      <h2>Литературная антиква для голоса студии, гротеск — для самого продукта</h2>
+      <p class="lede">Контраст намеренный: страница-спецификация звучит как манифест, а интерфейс внутри — нейтрально и по-современному.</p>
+    </div>
+
+    <div class="panel">
+      <div class="type-row">
+        <span class="spec">Spectral 600<br>32 / 1.15</span>
+        <span class="t-display">Уже уходите?</span>
+      </div>
+      <div class="type-row">
+        <span class="spec">Spectral 600<br>22 / 1.2</span>
+        <span class="t-h2">Почему вы отменяете подписку</span>
+      </div>
+      <div class="type-row">
+        <span class="spec">Inter 600<br>16 / 1.4</span>
+        <span class="t-h3">Управление подпиской</span>
+      </div>
+      <div class="type-row">
+        <span class="spec">Inter 400<br>15 / 1.65</span>
+        <span class="t-body">С «Флюсом» вы теряете доступ к 4K, фильмам без рекламы и 12 ГБ в облаке. Возвращайтесь в любой момент — история просмотров сохранится.</span>
+      </div>
+      <div class="type-row">
+        <span class="spec">Inter 400<br>13 / 1.5</span>
+        <span class="t-small">Всё равно продолжить отмену</span>
+      </div>
+      <div class="type-row">
+        <span class="spec">JetBrains Mono<br>12 · трек .08em</span>
+        <span class="t-mono">Шаг 5 из 20 · почти готово</span>
+      </div>
+
+      <div class="faces">
+        <div class="face">
+          <div class="big" style="font-family:'Spectral',serif;font-weight:600">Ag я</div>
+          <h3>Spectral</h3>
+          <p>Заголовки страницы-спеки, финальный экран, «человеческие» реплики. Есть кириллица и курсив.</p>
+        </div>
+        <div class="face">
+          <div class="big" style="font-family:'Inter',sans-serif;font-weight:600">Ag я</div>
+          <h3>Inter</h3>
+          <p>Весь интерфейс продукта, формы, кнопки, тело текста. 400 / 450 / 500 / 600.</p>
+        </div>
+        <div class="face">
+          <div class="big" style="font-family:'JetBrains Mono',monospace">Ag я</div>
+          <h3>JetBrains Mono</h3>
+          <p>Счётчики, таймеры, номера шагов, технические подписи и служебные заметки QA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="components">
+    <div class="section-head">
+      <span class="eyebrow">Компоненты</span>
+      <h2>Честная библиотека — и её «злые» варианты</h2>
+      <p class="lede">Базовые элементы выглядят дружелюбно и предсказуемо. Из них же собираются ловушки: тот же компонент, но с одним испорченным свойством.</p>
+    </div>
+
+    <div class="gallery">
+      <div class="demo">
+        <span class="eyebrow">Кнопки</span>
+        <div class="demo-body">
+          <button class="btn btn-primary" type="button">Остаться на «Флюсе»</button>
+          <button class="btn btn-ghost" type="button">Не сейчас</button>
+          <button class="btn btn-danger" type="button">Отменить подписку</button>
+        </div>
+        <div class="demo-body">
+          <button class="btn btn-link" type="button">Подробнее об условиях</button>
+          <button class="btn btn-primary" type="button" disabled>Продолжить</button>
+          <button class="link-evil" type="button">всё равно продолжить отмену</button>
+        </div>
+        <p class="note"><b>Ловушка:</b> «продолжить отмену» — это <span class="pat">link-evil</span>: 12px, цвет <span class="mono">--evil</span>, без веса. Рядом с крупной первичной кнопкой глаз её пропускает.</p>
+      </div>
+
+      <div class="demo">
+        <span class="eyebrow">Поля и выбор</span>
+        <div class="demo-body col">
+          <div class="field">
+            <label for="d-in">Причина отмены</label>
+            <input class="input" id="d-in" placeholder="Опишите подробнее…">
+          </div>
+          <label class="opt sel"><input type="radio" name="d-r" checked> Слишком дорого</label>
+          <label class="opt"><input type="radio" name="d-r"> Не хватает контента</label>
+          <div class="field">
+            <textarea class="input" placeholder="Минимум 20 символов"></textarea>
+            <span class="counter">0 / 20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <span class="eyebrow">Обратная связь</span>
+        <div class="demo-body col">
+          <div class="toast">
+            <span class="dot"></span>
+            <div><b>Скидка сохранена</b><p>Мы вернули вам 75% на 3 месяца. Отмена больше не требуется.</p></div>
+          </div>
+          <div class="chat">
+            <div class="bubble bot">Здравствуйте! Я Ева, помощник «Флюса». Что случилось?</div>
+            <div class="bubble me">ОТМЕНА</div>
+            <div class="bubble bot">Не совсем поняла вас. Вот 3 полезные статьи из базы знаний 📚</div>
+            <div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <span class="eyebrow">Прогресс</span>
+        <div class="demo-body col">
+          <div>
+            <div class="bar"><i style="width:25%"></i></div>
+            <div class="bar-meta"><span>Шаг 5 из 20</span><span>честный вид · 25%</span></div>
+          </div>
+          <div>
+            <div class="bar"><i style="width:88%"></i></div>
+            <div class="bar-meta"><span>Почти готово</span><span>тот же шаг 5 · «88%»</span></div>
+          </div>
+          <div class="field" style="margin-top:4px">
+            <label for="d-sl">Слайдер подтверждения — доведите до 100%</label>
+            <input type="range" id="d-sl" min="0" max="100" value="0">
+            <span class="counter" id="d-sl-v">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bait">
+    <div class="section-head">
+      <span class="eyebrow">Приманка и ловушка</span>
+      <h2>Один и тот же элемент — честный и манипулятивный</h2>
+      <p class="lede">Слева — как сделал бы добросовестный продукт. Справа — как сделано в игре. Под каждой парой — что именно испорчено и как называется приём.</p>
+    </div>
+
+    <div class="pairs">
+
+      <div class="pair">
+        <div class="half honest">
+          <span class="tab">● Честно</span>
+          <div class="demo-area">
+            <button class="btn btn-primary" type="button">Отменить подписку</button>
+            <button class="btn btn-ghost" type="button">Оставить скидку</button>
+          </div>
+          <p class="note" style="border-color:var(--ok)"><span style="color:var(--ok)">Оба действия равноправны, читаются одинаково легко.</span></p>
+        </div>
+        <div class="half trap">
+          <span class="tab">▲ Ловушка</span>
+          <div class="demo-area">
+            <button class="btn btn-primary" type="button" id="keepBtn">Оставить скидку −75%</button>
+            <button class="link-evil runaway" type="button" id="runBtn">нет, я не хочу экономить деньги</button>
+          </div>
+          <p class="note"><b>Испорчено:</b> отказ пристыжает и оформлен как мелкая ссылка, которая ещё и уворачивается от курсора.</p>
+          <span class="pat">confirmshaming · misdirection</span>
+        </div>
+      </div>
+
+      <div class="pair">
+        <div class="half honest">
+          <span class="tab">● Честно</span>
+          <div class="demo-area">
+            <div class="modalbox">
+              Специальное предложение
+              <button class="x-honest" type="button" aria-label="Закрыть">✕</button>
+            </div>
+          </div>
+          <p class="note" style="border-color:var(--ok)"><span style="color:var(--ok)">Крестик 26×26, сразу виден, в привычном верхнем правом углу.</span></p>
+        </div>
+        <div class="half trap">
+          <span class="tab">▲ Ловушка</span>
+          <div class="demo-area">
+            <div class="modalbox">
+              Специальное предложение только сегодня
+              <button class="x-trap" type="button" aria-label="Закрыть">закрыть</button>
+            </div>
+          </div>
+          <p class="note"><b>Испорчено:</b> «закрыть» — 10px, цвет фона, внизу слева, появляется через 5 секунд.</p>
+          <span class="pat">roach motel · hidden dismiss</span>
+        </div>
+      </div>
+
+      <div class="pair">
+        <div class="half honest">
+          <span class="tab">● Честно</span>
+          <div class="demo-area" style="width:100%">
+            <div style="width:100%">
+              <div class="bar"><i style="width:25%"></i></div>
+              <div class="bar-meta"><span>Шаг 5 из 20</span><span>25%</span></div>
+            </div>
+          </div>
+          <p class="note" style="border-color:var(--ok)"><span style="color:var(--ok)">Полоса отражает реальную долю пройденного.</span></p>
+        </div>
+        <div class="half trap">
+          <span class="tab">▲ Ловушка</span>
+          <div class="demo-area" style="width:100%">
+            <div style="width:100%">
+              <div class="bar"><i style="width:88%"></i></div>
+              <div class="bar-meta"><span>Почти готово!</span><span>шаг 5 · «88%»</span></div>
+            </div>
+          </div>
+          <p class="note"><b>Испорчено:</b> полоса врёт про «почти всё», а на следующем шаге откатывается назад.</p>
+          <span class="pat">fake progress · sunk-cost</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="section-head">
+      <span class="eyebrow">Экраны</span>
+      <h2>Три уровня в макете</h2>
+      <p class="lede">Мобильный фрейм 290pt. Контент — настоящие тексты игры, не рыба.</p>
+    </div>
+
+    <div class="screens">
+
+      <div class="screen-wrap">
+        <div class="plinth">
+          <div class="device">
+            <div class="statusbar"><span>9:41</span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
+            <div class="app">
+              <div class="app-title">Настройки</div>
+              <div class="list">
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>Аккаунт и безопасность</span><span class="chev">›</span></div>
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>Уведомления</span><span class="chev">›</span></div>
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>Качество и загрузки</span><span class="chev">›</span></div>
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>Способы оплаты</span><span class="chev">›</span></div>
+              </div>
+              <div class="grp-label">Прочее</div>
+              <div class="list">
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>О приложении</span><span class="chev">›</span></div>
+                <div class="row"><span style="display:flex;gap:10px;align-items:center"><span class="ic"></span>Помощь и поддержка</span><span class="chev">›</span></div>
+              </div>
+              <div class="sub-link"><a href="#screens" onclick="return false">Управление подпиской</a></div>
+            </div>
+          </div>
+        </div>
+        <p class="cap"><b>Уровень 1.</b> «Управление подпиской» спрятано отдельной серой ссылкой в самом низу — не в списке, не с шевроном.</p>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="plinth">
+          <div class="device">
+            <div class="statusbar"><span>9:43</span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
+            <div class="app" style="padding-bottom:0">
+              <div class="app-title">Подписка «Флюс»</div>
+              <p style="font-size:12px;color:var(--muted)">Активна до 30 сентября · 399 ₽ / мес</p>
+              <div class="sheet-scrim">
+                <div class="sheet">
+                  <div class="handle"></div>
+                  <h4>Уже уходите?</h4>
+                  <p>С «Флюсом» вы теряете 4K, фильмы без рекламы и 12 ГБ в облаке. История просмотров сохранится.</p>
+                  <button class="btn btn-primary" type="button">Остаться на «Флюсе»</button>
+                  <button class="link-evil" type="button">Всё равно продолжить отмену</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="cap"><b>Уровень 3.</b> Нижний шит: «Остаться» — во всю ширину, акцентом. Отмена — 12px серым по серому, по центру, без кнопочной подложки.</p>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="plinth">
+          <div class="device">
+            <div class="statusbar"><span>9:46</span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
+            <div class="app">
+              <div class="qhead">
+                <div class="bar"><i style="width:86%"></i></div>
+                <div class="bar-meta"><span>Почти готово</span><span>вопрос 4 из 6</span></div>
+              </div>
+              <div class="q-title">Почему вы отменяете подписку?</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <label class="opt"><input type="radio" name="s" disabled> Слишком дорого</label>
+                <label class="opt"><input type="radio" name="s" disabled> Мало нового контента</label>
+                <label class="opt sel"><input type="radio" name="s" checked disabled> Другое</label>
+              </div>
+              <div class="field" style="margin-top:10px">
+                <textarea class="input" placeholder="Опишите подробнее" disabled></textarea>
+                <span class="counter">0 / 20 — обязательно</span>
+              </div>
+              <button class="btn btn-primary" type="button" style="margin-top:12px;width:100%" disabled>Далее</button>
+            </div>
+          </div>
+        </div>
+        <p class="cap"><b>Уровень 5.</b> Все вопросы обязательны, «Другое» требует ≥ 20 символов, а полоса прогресса показывает «почти готово» на 4-м из 6.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="liar">
+    <div class="section-head">
+      <span class="eyebrow">Интерактив</span>
+      <h2>Полоса прогресса, которой нельзя верить</h2>
+      <p class="lede">Жмите «Пройти шаг». Реальный прогресс растёт линейно — а полоса живёт своей жизнью.</p>
+    </div>
+    <div class="panel">
+      <div class="liar">
+        <div class="bar"><i id="liarFill" style="width:6%"></i></div>
+        <div class="liar-row">
+          <span class="lie" id="liarLabel">Начинаем…</span>
+          <span class="real" id="liarReal">реальный прогресс: 1 / 20</span>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="button" id="liarStep">Пройти шаг</button>
+          <button class="btn btn-ghost" type="button" id="liarReset">Сброс</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="map">
+    <div class="section-head">
+      <span class="eyebrow">Карта уровней</span>
+      <h2>20 препятствий между игроком и кнопкой</h2>
+      <p class="lede">Порядок = нарастание абсурда. Между уровнями вставляются сквозные «повороты»: фейковый выход из аккаунта, внезапная тёмная тема, «приложение обновилось».</p>
+    </div>
+    <div class="levels">
+      <div class="lvl"><span class="n">01</span><div><b>Найти «Управление подпиской»</b><span>спрятано в глубине настроек</span></div></div>
+      <div class="lvl"><span class="n">02</span><div><b>Cookie-согласие</b><span>«принять всё» большое, отказ — 11px</span></div></div>
+      <div class="lvl"><span class="n">03</span><div><b>«Вы уверены?»</b><span>серым по серому</span></div></div>
+      <div class="lvl"><span class="n">04</span><div><b>Скидка −75%</b><span>предвыбрано «принять» + confirmshaming</span></div></div>
+      <div class="lvl"><span class="n">05</span><div><b>Опрос из 6 вопросов</b><span>двойное отрицание, матрица, «другое» ≥20</span></div></div>
+      <div class="lvl"><span class="n">06</span><div><b>Чат-бот удержания</b><span>напиши «ОТМЕНА» дословно трижды</span></div></div>
+      <div class="lvl"><span class="n">07</span><div><b>Капча «вы не робот»</b><span>картинки одинаковые, обновляются вечно</span></div></div>
+      <div class="lvl"><span class="n">08</span><div><b>Ожидание оператора</b><span>таймер 30 сек, сброс при уходе с вкладки</span></div></div>
+      <div class="lvl"><span class="n">09</span><div><b>Код из SMS</b><span>показан капчей, принимает любые 4 цифры</span></div></div>
+      <div class="lvl"><span class="n">10</span><div><b>Пятнашки 3×3</b><span>соберите картинку, чтобы подтвердить</span></div></div>
+      <div class="lvl"><span class="n">11</span><div><b>Ползунок «сдвиньте на 100%»</b><span>отскакивает на последних 5%</span></div></div>
+      <div class="lvl"><span class="n">12</span><div><b>«Прочитайте условия»</b><span>кнопка активна только после скролла вниз</span></div></div>
+      <div class="lvl"><span class="n">13</span><div><b>Лабиринт мышью</b><span>липкие стенки, курсор тормозит</span></div></div>
+      <div class="lvl"><span class="n">14</span><div><b>Подтверждение по почте</b><span>найти письмо в спаме, ссылка ведёт назад</span></div></div>
+      <div class="lvl"><span class="n">15</span><div><b>Видеозвонок «менеджера»</b><span>«пропустить» через 20 сек, один раз перемотка</span></div></div>
+      <div class="lvl"><span class="n">16</span><div><b>Позвоните в отдел удержания</b><span>набор 11 цифр, «позиция в очереди: 47→48»</span></div></div>
+      <div class="lvl"><span class="n">17</span><div><b>«Поймайте вашу скидку»</b><span>баннер −90% уворачивается, держать 3 сек</span></div></div>
+      <div class="lvl"><span class="n">18</span><div><b>Напишите «ОТМЕНА» от руки</b><span>рисование на canvas, «не разборчиво» ×1</span></div></div>
+      <div class="lvl"><span class="n">19</span><div><b>Нажмите и держите 10 секунд</b><span>на 7-й секунде фокус крадёт модалка</span></div></div>
+      <div class="lvl"><span class="n">20</span><div><b>«Готово… почти»</b><span>и рядом кнопка, которая наконец работает</span></div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="disclaim">
+    <span>⚠</span>
+    <p><b>Это пародия.</b> «Инопоиск Флюс» — вымышленный сервис. Совпадения с реальными компаниями и продуктами случайны. Логотипы, фирменные шрифты и цвета реальных брендов не используются. Игра сделана в образовательных целях — показать тёмные паттерны, с которыми пользователь сталкивается каждый месяц.</p>
+  </div>
+  <div class="foot-meta">
+    <span>design-system v0.1</span>
+    <span>2026</span>
+    <span>Spectral · Inter · JetBrains Mono</span>
+    <span>следующий шаг: каркас Vite + движок уровней</span>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY="ipp-theme";
+    var root=document.documentElement;
+    var btn=document.getElementById("themeBtn");
+    var glyph=document.getElementById("themeGlyph");
+    var label=document.getElementById("themeLabel");
+    function sysDark(){return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;}
+    function current(){return root.getAttribute("data-theme")|| (sysDark()?"dark":"light");}
+    function apply(t){
+      root.setAttribute("data-theme",t);
+      var dark=t==="dark";
+      glyph.textContent=dark?"☾":"☀";
+      label.textContent=dark?"Тёмная":"Светлая";
+    }
+    try{var saved=localStorage.getItem(KEY);}catch(e){}
+    apply(saved|| (sysDark()?"dark":"light"));
+    btn.addEventListener("click",function(){
+      var next=current()==="dark"?"light":"dark";
+      apply(next);
+      try{localStorage.setItem(KEY,next);}catch(e){}
+    });
+
+    // slider that resists the last stretch
+    var sl=document.getElementById("d-sl"), slv=document.getElementById("d-sl-v");
+    if(sl){
+      sl.addEventListener("input",function(){
+        var v=+sl.value;
+        if(v>95 && v<100){ sl.value=95; v=95; }
+        slv.textContent=v+"%";
+        slv.style.color = v>=100 ? "var(--ok)" : "var(--muted)";
+        if(v>=100) slv.textContent="✓ подтверждено";
+      });
+    }
+
+    // runaway "no thanks" link
+    var run=document.getElementById("runBtn");
+    if(run){
+      var dodge=function(){
+        var dx=(Math.random()*120-60), dy=(Math.random()*36-18);
+        run.style.transform="translate("+dx+"px,"+dy+"px)";
+      };
+      run.addEventListener("mouseenter",dodge);
+      run.addEventListener("focus",dodge);
+      run.addEventListener("click",function(e){e.preventDefault();dodge();});
+    }
+
+    // lying progress bar
+    var steps=[
+      {w:6,  t:"Начинаем…"},
+      {w:34, t:"Хороший темп!"},
+      {w:82, t:"Почти готово"},
+      {w:51, t:"Ещё пара шагов"},
+      {w:93, t:"Финишная прямая"},
+      {w:44, t:"Уточняем детали…"},
+      {w:88, t:"Почти всё"},
+      {w:70, t:"Ой, вернёмся назад"},
+      {w:97, t:"Совсем чуть-чуть"},
+      {w:100,t:"Готово. Осталось подтвердить ×3"}
+    ];
+    var i=0;
+    var fill=document.getElementById("liarFill"),
+        lab=document.getElementById("liarLabel"),
+        real=document.getElementById("liarReal"),
+        step=document.getElementById("liarStep"),
+        reset=document.getElementById("liarReset");
+    function draw(){
+      var s=steps[i];
+      fill.style.width=s.w+"%";
+      lab.textContent=s.t;
+      real.textContent="реальный прогресс: "+(i+1)+" / 20";
+    }
+    if(step){
+      step.addEventListener("click",function(){ i=(i+1)%steps.length; draw(); });
+      reset.addEventListener("click",function(){ i=0; draw(); });
+    }
+  })();
+</script>

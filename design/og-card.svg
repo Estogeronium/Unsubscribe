@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <style>
+    .serif { font-family: "Spectral","Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif; }
+    .sans  { font-family: "Inter",-apple-system,"Helvetica Neue",Arial,sans-serif; }
+    .mono  { font-family: "JetBrains Mono","SF Mono",ui-monospace,Menlo,monospace; }
+  </style>
+
+  <rect width="1200" height="1200" fill="#f4f4f7"/>
+
+  <!-- OG content lives in a centred 1200x630 band (y 285..915); sips crops to it -->
+  <g transform="translate(0,285)">
+    <rect x="0" y="0" width="1200" height="6" fill="#5b5bd6"/>
+
+    <rect x="90" y="66" width="42" height="42" rx="12" fill="#5b5bd6"/>
+    <text x="111" y="96" class="sans" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">и</text>
+    <text x="148" y="96" class="sans" font-size="27" font-weight="600" fill="#54545f">Инопоиск Флюс</text>
+
+    <text x="86" y="322" class="serif" font-size="132" font-weight="600" fill="#1a1a23" letter-spacing="-3">Отписаться</text>
+
+    <text x="92" y="404" class="sans" font-size="32" fill="#54545f">Одна цель — отменить подписку.</text>
+    <text x="92" y="450" class="sans" font-size="32" fill="#54545f">Между вами и кнопкой — двадцать тёмных паттернов.</text>
+
+    <rect x="92" y="524" width="1016" height="10" rx="5" fill="#e3e3ea"/>
+    <rect x="92" y="524" width="446" height="10" rx="5" fill="#5b5bd6"/>
+    <text x="92" y="566" class="mono" font-size="19" fill="#8b8b98">почти готово</text>
+    <text x="1108" y="566" class="mono" font-size="20" font-weight="500" fill="#5b5bd6" text-anchor="end">vonzvyagin.ru/unsubscribe</text>
+  </g>
+</svg>
