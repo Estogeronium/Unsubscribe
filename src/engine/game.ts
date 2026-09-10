@@ -4,6 +4,7 @@ import { el, mmss, plural } from "./dom";
 import { levels } from "../levels";
 import { TWISTS, type Twist } from "./twists";
 import * as sfx from "./sound";
+import { track } from "./analytics";
 
 const DEFAULT_FAIL = "Спасибо, что согласились не отменять подписку. Повезёт в другой раз.";
 
@@ -64,6 +65,7 @@ export class Game implements GameApi {
       this.startedAt = performance.now();
       document.addEventListener("click", this.countClick, true);
       this.tickLoop();
+      track("start");
     }
     this.mountCurrent();
   }
@@ -106,6 +108,7 @@ export class Game implements GameApi {
 
   fail = (message?: string): void => {
     sfx.fail();
+    track("fail", this.index + 1);
     this.cleanup?.();
     this.cleanup = undefined;
     this.stage.replaceChildren();
@@ -152,6 +155,7 @@ export class Game implements GameApi {
     const level = levels[this.index]!;
     const isEnding = this.index === levels.length - 1;
     this.hud.setVisible(!isEnding);
+    if (!isEnding) track("level", this.index + 1);
 
     const maybeCleanup = level.mount(this.stage, this);
     if (typeof maybeCleanup === "function") this.cleanup = maybeCleanup;

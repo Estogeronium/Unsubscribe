@@ -1,6 +1,7 @@
 import type { Level } from "../engine/types";
 import { confetti, el, mmss, plural, toast } from "../engine/dom";
 import { blip, wheelSpin, win } from "../engine/sound";
+import { track } from "../engine/analytics";
 
 const SITE_URL = "https://unsubscribe.vonzvyagin.ru";
 
@@ -78,9 +79,12 @@ export const ending: Level = {
   id: "fortune",
   name: "Финал",
   mount(root, game) {
-    const time = mmss(game.elapsed());
+    const elapsedMs = game.elapsed();
+    const time = mmss(elapsedMs);
     const clicks = game.clicks();
     const timers: number[] = [];
+
+    track("complete", Math.round(elapsedMs / 1000), clicks);
 
     const view = el(`
       <div class="screen end">
