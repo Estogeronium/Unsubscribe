@@ -220,6 +220,15 @@ img {
 .link-evil:hover {
   color: var(--evil);
 }
+/* Только для 1-го уровня: игрок ещё не знает правил, ссылку на отмену
+   нужно быть видно сразу — дальше по игре link-evil снова прячется. */
+.link-evil.is-loud {
+  color: var(--danger);
+  font-weight: 500;
+}
+.link-evil.is-loud:hover {
+  color: var(--danger);
+}
 .link-block {
   display: block;
   width: 100%;

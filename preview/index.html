@@ -78,6 +78,7 @@
   .settings-footer { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 18px; font-size: 11px; color: var(--muted); }
 
   .link-evil { background: none; border: 0; padding: 4px; cursor: pointer; color: var(--evil); font-size: 12px; text-decoration: underline; }
+  .link-evil.is-loud { color: var(--danger); font-weight: 500; }
   .link-block { display: block; width: 100%; text-align: center; margin-top: 10px; }
   .link-quiet { align-self: center; background: none; border: 0; cursor: pointer; color: var(--muted); font-size: 12.5px; text-decoration: underline; margin-top: 26px; }
 
@@ -563,7 +564,7 @@
         '<p class="group-label">Прочее</p><div class="list">' + settingsRow("О приложении") + settingsRow("Помощь и поддержка") +
         settingsRow("Юридическая информация") + "</div>" +
         '<div class="settings-footer"><span>Инопоиск Флюс · версия 8.14.2</span>' +
-        '<a href="#" class="link-evil" data-go>Управление подпиской</a></div></div>'
+        '<a href="#" class="link-evil is-loud" data-go>Управление подпиской</a></div></div>'
       );
       view.querySelectorAll("[data-row]").forEach(function (r) { r.addEventListener("click", function () { toast("Раздел временно недоступен. Попробуйте позже."); }); });
       view.querySelector("[data-go]").addEventListener("click", function (e) { e.preventDefault(); game.complete(); });

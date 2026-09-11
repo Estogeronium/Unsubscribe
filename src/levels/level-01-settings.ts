@@ -26,7 +26,7 @@ export const level01: Level = {
         </div>
         <div class="settings-footer">
           <span>Инопоиск Флюс · версия 8.14.2</span>
-          <a href="#" class="link-evil" data-go>Управление подпиской</a>
+          <a href="#" class="link-evil is-loud" data-go>Управление подпиской</a>
         </div>
       </div>`);
 
